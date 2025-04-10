@@ -1,8 +1,4 @@
-{
-  pkgs,
-  XDGBin,
-  ...
-}: {
+{pkgs, ...}: {
   programs.zsh = {
     enable = true;
     enableCompletion = false;
@@ -20,10 +16,9 @@
       cava = "cava.sh";
       fastfetch = "clear; fastfetch";
       nvn = "cd /etc/nixos/; nv";
-      switch = ''cd /etc/nixos/; clear; fastfetch; git add .; git commit -m "switch"; sudo nixos-rebuild switch --flake /etc/nixos/. ; git add . ; git commit -m "Update Flake Lock"; cd -'';
-      update = "cd /etc/nixos/; clear; fastfetch; nix flake update --flake /etc/nixos/. --commit-lock-file; cd -";
-      boot = ''cd /etc/nixos/; clear; fastfetch; git add .; git commit -m "switch"; sudo nixos-rebuild boot --flake /etc/nixos/. ; git add . ; git commit -m "Update Flake Lock"; cd -'';
-      cdn = "cd /etc/nixos/";
+      switch = ''cd /etc/nixos/; clear; fastfetch; git add .; git commit -m "switch"; sudo nixos-rebuild switch --flake .; git add . ; git commit -m "Update Flake Lock"; cd -'';
+      update = "cd /etc/nixos/; clear; fastfetch; nix flake update --flake . --commit-lock-file; cd -";
+      boot = ''cd /etc/nixos/; clear; fastfetch; git add .; git commit -m "switch"; sudo nixos-rebuild boot --flake . ; git add . ; git commit -m "Update Flake Lock"; cd -'';
       nixp = "cd /etc/nixos; git push -u origin main; cd -";
       firmware = "sudo systemctl reboot --firmware-setup";
     };
