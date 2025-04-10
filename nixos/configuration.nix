@@ -1,14 +1,21 @@
 {
   userAccounts.users = [];
   userAccounts.sudoUsers = ["mela"];
+
+  environment.sessionVariables = {
+    FLAKE_PATH = "/etc/nixos"; #path to flake.nix
+  };
+
   drivers = {
     amd.enable = false;
     nvidia.enable = true;
   };
+
   displayManager = {
     sddm.enable = true;
     tuiGreet.enable = false;
   };
+
   locale = "en_GB.UTF-8";
 
   services.xserver.xkb = {
