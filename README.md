@@ -1,5 +1,5 @@
 # My NixOS Dots
-### My NixOS Dotfiles, basically being updated near constantly as I change them.
+### Nixos Hyprland Dotfiles template (Also Basically what I use). 
 
 https://github.com/user-attachments/assets/669d0a3e-0035-4646-9147-a5affd1d3237
 
@@ -11,8 +11,7 @@ https://github.com/user-attachments/assets/669d0a3e-0035-4646-9147-a5affd1d3237
 
 ## Installation
 > [!WARNING]
-> This config is what I use on my pc, it will have software you have no need for. I have a slightly stripped down dotfiles [here](https://github.com/Immelancholy/Nix-Dotfiles)
-> Basically YMMV.
+> Meant for a minimal install of nixos, ymmv
 * Add this line to your configuration.nix in /etc/nixos/
 ```
   nix.settings = {
@@ -33,16 +32,68 @@ mkdir -p Nix-Dotfiles (or anything rly this is just the name of the repo); cd Ni
 ```
 * then:
 ```
-nix flake init -t github:Immelancholy/My-Nix
+nix flake init -t github:Immelancholy/Nix-Dotfiles
 ```
 * Enter configuration.nix and change to you liking:
 ```
-{
-  userAccounts.users = [];
-  userAccounts.sudoUsers = ["mela"];
+{pkgs, ...}: {
+  userAccounts.users = [
+  ]; # user accounts here
+  userAccounts.sudoUsers = [
+    "your-user"
+  ]; # sudo enabled accounts here (You'll want to go here if you're installing these. )
+
+  # duplicate this for each user
+  home-manager.users.your-user = {
+    # packages for user
+    home.packages = with pkgs; [
+      # reaper
+      # bespokesynth
+      # reaper-sws-extension
+      # teams-for-linux
+      # shotcut
+      # krita
+    ];
+    programs.git = {
+      enable = true;
+      userName = ""; # username for git
+      userEmail = ""; # email for git
+    };
+    programs.cava = {
+      settings = {
+        input = {
+          method = "pipewire";
+          source = "58"; # Cava object.serial for virtual_cable_in
+        };
+      };
+    };
+    # Important hyprland user configs
+    wayland.windowManager.hyprland = {
+      # ONLY ENABLE 1 LAYOUT!!
+      layout = {
+        master.enable = false;
+        dwindle.enable = false;
+        hy3.enable = true;
+      };
+      useHyprspace = true;
+      settings = {
+        monitor = ", preferred, auto, 1";
+        input = {
+          kb_layout = "gb";
+          follow_mouse = "1";
+
+          sensitivity = "0";
+          force_no_accel = "1";
+          numlock_by_default = "true";
+        };
+      };
+    };
+  };
+
+  # services.solaar.enable = true; #logitech mouse drivers
 
   environment.sessionVariables = {
-    FLAKE_PATH = "/etc/nixos"; #path to flake.nix
+    FLAKE_PATH = ""; #path to dots
   };
 
   drivers = {
@@ -68,37 +119,7 @@ nix flake init -t github:Immelancholy/My-Nix
     keyMap = "uk";
   };
   time.timeZone = "Europe/London";
-  boot.secureBoot.enable = false;
-}
-```
-* Enter home-configuration.nix and change to your liking setting git username and email and changing hyprland settings:
-```
-{
-  programs.git = {
-    enable = true;
-    userName = "";
-    userEmail = "";
-  };
-  wayland.windowManager.hyprland = {
-    # ONLY ENABLE 1 LAYOUT!!
-    layout = {
-      master.enable = false;
-      dwindle.enable = false;
-      hy3.enable = true;
-    };
-    useHyprspace = true;
-    settings = {
-      monitor = ", preferred, auto, 1";
-      input = {
-        kb_layout = "gb"; # Keyboard layout for hyprland
-        follow_mouse = "1";
-
-        sensitivity = "0";
-        force_no_accel = "1";
-        numlock_by_default = "true";
-      };
-    };
-  };
+  boot.secureBoot.enable = false; # Secure boot enable/disable
 }
 ```
 * run this command in the same folder that flake.nix is located. (Where you've hopefully been this whole time lol)
@@ -118,7 +139,7 @@ sudo nixos-rebuild boot --flake .
 * Remember to set default device to Desktop Output and Desktop Mic Out in pavucontrol (Not necessary but I would recommended)
 * Set default device to Commes Output and Commes Mic In in discord lol (Again not necessary but splitting desktop and commes audio is useful)
 * Then set up a qpwgraph patchbay (this launches on workspace 4 on boot) to pin the output and input virtual devices to your audio device.
-* enable secureboot in system/boot.nix (optional) (set it up using the guide [here](https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md)).
+* enable secureboot in configuration.nix (optional) (set it up using the guide [here](https://github.com/nix-community/lanzaboote/blob/master/docs/QUICK_START.md) first, you don't have to set up lanzaboote, just the stuff with key creating, signing and enrolling).
 ```
 boot.secureBoot.enable = false; #secure boot (keep disabled and set up post-install)
 ```

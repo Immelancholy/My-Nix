@@ -17,6 +17,10 @@
     ];
   };
 
+  security.sudo = {
+    execWheelOnly = true;
+  };
+
   zramSwap = {
     enable = true;
     algorithm = "zstd";
@@ -33,8 +37,6 @@
       apparmor-parser
     ];
   };
-
-  services.solaar.enable = true;
 
   networking.hostName = "nixos";
 
