@@ -80,5 +80,5 @@
     keyMap = "uk";
   };
   time.timeZone = "Europe/London";
-  boot.secureBoot.enable = false;
+  boot.secureBoot.enable = true;
 }
