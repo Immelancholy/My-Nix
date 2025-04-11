@@ -1,16 +1,13 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
+  nixpkgs.overlays = [inputs.rust-overlay.overlays.default];
   userAccounts.users = [];
   userAccounts.sudoUsers = ["mela"];
 
   home-manager.users.mela = {
-    home.packages = with pkgs; [
-      reaper
-      bespokesynth
-      reaper-sws-extension
-      teams-for-linux
-      shotcut
-      krita
-    ];
     programs.git = {
       enable = true;
       userName = "Immelancholy";
@@ -46,15 +43,69 @@
         };
       };
     };
+    home.sessionVariables = {
+      NOTES_PATH = "/home/mela/Documents/Obsidian-Vault"; # path to notes folder ( for neovim )
+      PROJECTS_PATH = "/home/mela/Projects"; # path to Projects folder ( for neovim )
+    };
+    home.packages = with pkgs; [
+      (rust-bin.selectLatestNightlyWith (toolchain: toolchain.default.override {extensions = ["rust-src" "rust-analyzer"];}))
+      reaper
+      bespokesynth
+      reaper-sws-extension
+      teams-for-linux
+      shotcut
+      krita
+    ];
     services.remmina = {
       enable = true;
+    };
+    programs.nixvim = {
+      plugins = {
+        rustaceanvim = {
+          enable = true;
+          settings = {
+            rustanalyzerPackafe = null;
+            server = {
+              cmd = [
+                "rust-analyzer"
+              ];
+              default_settings = {
+                rust-analyzer = {
+                  check = {
+                    command = "clippy";
+                  };
+                  inlayHints = {
+                    lifetimeElisionHints = {
+                      enable = "always";
+                    };
+                  };
+                };
+              };
+              standalone = false;
+            };
+          };
+        };
+        obsidian = {
+          enable = true;
+          settings = {
+            ui.enable = false;
+            workspaces = [
+              {
+                name = "Obsidian-Vault";
+                path = "~/Documents/Obsidian-Vault/";
+              }
+            ];
+          };
+        };
+      };
     };
   };
 
   services.solaar.enable = true;
+  hardware.logitech.wireless.enable = true;
 
   environment.sessionVariables = {
-    FLAKE_PATH = "/home/mela/NixDots"; #path to flake.nix
+    FLAKE_PATH = "/home/mela/NixDots"; # path to flake.nix
   };
 
   drivers = {

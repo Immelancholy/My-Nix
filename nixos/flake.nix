@@ -103,8 +103,8 @@
     nixpkgs,
     catppuccin,
     home-manager,
-    solaar,
     rust-overlay,
+    solaar,
     nix-flatpak,
     lanzaboote,
     nur,
@@ -124,19 +124,6 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hardware-configuration.nix
-          ({pkgs, ...}: {
-            nixpkgs.config.allowUnfree = true;
-            nixpkgs.overlays = [rust-overlay.overlays.default];
-            environment.systemPackages = with pkgs; [
-              (
-                rust-bin.selectLatestNightlyWith
-                (toolchain:
-                  toolchain.default.override {
-                    extensions = ["rust-src" "rust-analyzer"];
-                  })
-              )
-            ];
-          })
           nur.modules.nixos.default
           lanzaboote.nixosModules.lanzaboote
           nix-flatpak.nixosModules.nix-flatpak
